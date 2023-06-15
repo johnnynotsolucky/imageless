@@ -192,6 +192,25 @@ impl From<ImageOutputFormat> for image::ImageOutputFormat {
 	}
 }
 
+impl ImageOutputFormat {
+	pub fn extension(&self) -> &'static str {
+		match self {
+			ImageOutputFormat::Png => "png",
+			ImageOutputFormat::Jpeg { .. } => "jpg",
+			ImageOutputFormat::Gif => "gif",
+			ImageOutputFormat::Ico => "ico",
+			ImageOutputFormat::Bmp => "bmp",
+			ImageOutputFormat::Farbfeld => "ff",
+			ImageOutputFormat::Tga => "tga",
+			ImageOutputFormat::OpenExr => "exr",
+			ImageOutputFormat::Tiff => "tiff",
+			ImageOutputFormat::Avif => "avif",
+			ImageOutputFormat::Qoi => "qoi",
+			ImageOutputFormat::WebP => "webp",
+		}
+	}
+}
+
 #[derive(Debug, Error)]
 pub enum Error {
 	#[error(transparent)]
