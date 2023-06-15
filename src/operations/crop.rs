@@ -78,8 +78,7 @@ impl Process for Crop {
 
 #[cfg(test)]
 mod tests {
-	use crate::operations::crop::CropOrigin;
-	use crate::{Coordinate, Unit};
+	use crate::{operations::crop::CropOrigin, Coordinate, Unit};
 
 	const CANVAS_WIDTH: u32 = 100;
 	const CANVAS_HEIGHT: u32 = 100;

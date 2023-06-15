@@ -1,13 +1,14 @@
-use crate::operations::{AdjustBrightness, Blur, Crop, Grayscale, Resize};
-use crate::Unit::{Percentage, Pixel};
-use image::io::Reader as ImageReader;
-use image::DynamicImage;
+use crate::{
+	operations::{AdjustBrightness, Blur, Crop, Grayscale, Resize},
+	Unit::{Percentage, Pixel},
+};
+use image::{io::Reader as ImageReader, DynamicImage};
 use serde::{Deserialize, Serialize};
-use std::fs::File;
-use std::io;
-use std::io::BufWriter;
-use std::ops::{Add, Sub};
-use std::path::Path;
+use std::{
+	io,
+	ops::{Add, Sub},
+	path::Path,
+};
 use thiserror::Error;
 
 pub mod operations;
@@ -130,7 +131,7 @@ pub enum Operation {
 }
 
 impl Operation {
-	fn get_process(&self) -> &dyn Process {
+	pub fn get_process(&self) -> &dyn Process {
 		match self {
 			Self::AdjustBrightness(adjust) => adjust,
 			Self::Blur(blur) => blur,
@@ -208,19 +209,13 @@ pub enum Error {
 
 pub fn process_file<P: AsRef<Path>>(
 	in_path: P,
-	out_path: P,
-	out_format: ImageOutputFormat,
 	operations: Vec<Operation>,
-) -> Result<(), Error> {
+) -> Result<DynamicImage, Error> {
 	let mut image = ImageReader::open(in_path)?.decode()?;
 
 	for operation in operations.into_iter() {
 		image = operation.get_process().process(image)?;
 	}
 
-	let out_file = File::create(out_path)?;
-	let mut out_buf = BufWriter::new(out_file);
-	image.write_to(&mut out_buf, out_format)?;
-
-	Ok(())
+	Ok(image)
 }
